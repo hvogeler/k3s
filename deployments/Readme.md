@@ -1,2 +1,2 @@
 # K3s deployments
-These are deployments I have plazed around with so far.
+These are deployments I have played around with so far.
