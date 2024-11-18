@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-dev
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rust-dev
+  template:
+    metadata:
+      labels:
+        app: rust-dev
+    spec:
+      containers:
+        - name: rust-dev
+          image: hvogeler/rustdev:latest # rust:latest # Replace with your custom image if needed
+          ports:
+            - containerPort: 22 # 8080 # Optional, for hosting the Rust app
+          env:
+            - name: ROOT_PASSWORD
+              value: "Opus111!"
+          volumeMounts:
+            - mountPath: /workspace
+              name: rust-workspace
+          # command: ["/bin/bash"] # Start in an interactive shell for development
+          command: ["/bin/bash", "-c"]
+          args:
+            [
+              "apt-get update && apt-get install -y openssh-server && mkdir -p /run/sshd && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && echo 'root:$ROOT_PASSWORD' | chpasswd && /usr/sbin/sshd -D"
+            ]
+      volumes:
+        - name: rust-workspace
+          persistentVolumeClaim:
+            claimName: rust-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rust-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-dev
+  namespace: default
+spec:
+  selector:
+    app: rust-dev
+  ports:
+    - protocol: TCP
+      port: 22
+      targetPort: 22
+      nodePort: 32222
+  type: NodePort
