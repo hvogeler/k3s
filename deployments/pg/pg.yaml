@@ -12,9 +12,15 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeSelector:
+        app: postgres
       containers:
         - name: postgres
           image: 'postgres:16'
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432

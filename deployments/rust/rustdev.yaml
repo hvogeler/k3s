@@ -27,6 +27,8 @@ spec:
           env:
             - name: ROOT_PASSWORD
               value: "admin"
+            - name: PATH
+              value : /usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           volumeMounts:
             - mountPath: /workspace
               name: rust-workspace
@@ -34,10 +36,10 @@ spec:
               name: ssh-keys
               readOnly: true
           # command: ["/bin/bash"] # Start in an interactive shell for development
-          command: ["/bin/bash", "-c", "--"]
+          command: ["/bin/bash", "-c"]
           args:
             [
-              "apt-get update && apt-get install -y openssh-server && mkdir -p /run/sshd && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && echo 'root:$ROOT_PASSWORD' | chpasswd && /usr/sbin/sshd -D"
+              "apt-get update && apt-get install -y openssh-server && mkdir -p /run/sshd && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && echo 'AcceptEnv PATH' >> /etc/ssh/sshd_config && echo 'AcceptEnv PATH 2' >> /dudel.txt && echo 'root:admin' | chpasswd && /usr/sbin/sshd -D"
             ]
       volumes:
         - name: rust-workspace
