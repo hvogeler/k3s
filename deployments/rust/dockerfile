@@ -1,11 +1,12 @@
+# This optional but I did not get it to work. Only using the rust:latest directly worked
 FROM rust:latest
 
 # Install common development tools
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y \
+#     curl \
+#     git \
+#     build-essential \
+#     && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
 RUN useradd -ms /bin/bash dev
@@ -13,7 +14,7 @@ USER dev
 WORKDIR /home/dev
 
 # Install cargo-watch (optional, for live reloads)
-RUN cargo install cargo-watch
+# RUN cargo install cargo-watch
 
 # docker build -t <your-registry>/rust-dev:latest .
 # docker push <your-registry>/rust-dev:latest

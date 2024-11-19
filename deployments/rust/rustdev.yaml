@@ -15,17 +15,24 @@ spec:
     spec:
       containers:
         - name: rust-dev
-          image: hvogeler/rustdev:latest # rust:latest # Replace with your custom image if needed
+          image: rust:latest # Replace with your custom image if needed
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
           ports:
-            - containerPort: 22 # 8080 # Optional, for hosting the Rust app
+            - containerPort: 22
           env:
             - name: ROOT_PASSWORD
               value: "Opus111!"
           volumeMounts:
             - mountPath: /workspace
               name: rust-workspace
+            - mountPath: /root/.ssh
+              name: ssh-keys
+              readOnly: true
           # command: ["/bin/bash"] # Start in an interactive shell for development
-          command: ["/bin/bash", "-c"]
+          command: ["/bin/bash", "-c", "--"]
           args:
             [
               "apt-get update && apt-get install -y openssh-server && mkdir -p /run/sshd && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && echo 'root:$ROOT_PASSWORD' | chpasswd && /usr/sbin/sshd -D"
@@ -33,19 +40,41 @@ spec:
       volumes:
         - name: rust-workspace
           persistentVolumeClaim:
-            claimName: rust-pvc
+            claimName: rust-dev-volume-claim
+        - name: ssh-keys
+          secret:
+            secretName: ssh-public-key
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: rust-pvc
+  name: rust-dev-volume-claim
   namespace: default
+  labels:
+    app: rust-dev
 spec:
+  storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rust-dev-volume
+  labels:
+    type: local
+    app: rust-dev
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/rustdev
 ---
 apiVersion: v1
 kind: Service
@@ -61,3 +90,4 @@ spec:
       targetPort: 22
       nodePort: 32222
   type: NodePort
+
