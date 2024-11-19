@@ -13,6 +13,8 @@ spec:
       labels:
         app: rust-dev
     spec:
+      nodeSelector:
+        app: rust-dev
       containers:
         - name: rust-dev
           image: rust:latest # Replace with your custom image if needed
@@ -24,7 +26,7 @@ spec:
             - containerPort: 22
           env:
             - name: ROOT_PASSWORD
-              value: "Opus111!"
+              value: "admin"
           volumeMounts:
             - mountPath: /workspace
               name: rust-workspace
