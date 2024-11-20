@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-dev
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rust-dev
+  template:
+    metadata:
+      labels:
+        app: rust-dev
+    spec:
+      nodeSelector:
+        node-type: pi
+      containers:
+        - name: rust-dev
+          image: rust:latest # Replace with your custom image if needed
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          ports:
+            - containerPort: 22
+          env:
+            - name: ROOT_PASSWORD
+              value: "admin"
+            - name: PATH
+              value : /usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          volumeMounts:
+            - mountPath: /workspace
+              name: rust-workspace
+            - mountPath: /root/.ssh
+              name: ssh-keys
+              readOnly: true
+          # command: ["/bin/bash"] # Start in an interactive shell for development
+          command: ["/bin/bash", "-c"]
+          args:
+            [
+              "apt-get update && apt-get install -y openssh-server && mkdir -p /run/sshd && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && echo 'AcceptEnv PATH' >> /etc/ssh/sshd_config && echo 'AcceptEnv PATH 2' >> /dudel.txt && echo 'root:admin' | chpasswd && /usr/sbin/sshd -D"
+            ]
+      volumes:
+        - name: rust-workspace
+          persistentVolumeClaim:
+            claimName: rust-dev-volume-claim
+        - name: ssh-keys
+          secret:
+            secretName: ssh-public-key
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rust-dev-volume-claim
+  namespace: default
+  labels:
+    app: rust-dev
+spec:
+  volumeName: rust-dev-volume
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rust-dev-volume
+  labels:
+    type: local
+    app: rust-dev
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/rustdev
+---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   annotations:
+#     pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+#   name: rust-dev-smb-vol
+# spec:
+#   capacity:
+#     storage: 10Gi
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: smb
+#   mountOptions:
+#     - dir_mode=0777
+#     - file_mode=0777
+#   csi:
+#     driver: smb.csi.k8s.io
+#     readOnly: false
+#     volumeHandle: homelab
+#     volumeAttributes:
+#       source: "//192.168.178.42/homelab" # Change this to your SMB IP and share name
+#     nodeStageSecretRef:
+#       name: smbcreds
+#       namespace: default
+# ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-dev
+  namespace: default
+spec:
+  selector:
+    app: rust-dev
+  ports:
+    - protocol: TCP
+      port: 22
+      targetPort: 22
+      nodePort: 32222
+  type: NodePort
+
