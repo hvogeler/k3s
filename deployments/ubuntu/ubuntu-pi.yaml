@@ -21,6 +21,9 @@ spec:
           image: ubuntu:latest
           command: ["/bin/bash", "-c", "--"]
           args: ["while true; do sleep 30; done;"]
+          volumeMounts:
+            - mountPath: /mnt/homelab
+              name: smb-homelab-vol
           resources:
             requests:
               memory: "128Mi"
@@ -28,3 +31,24 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "1000m"
+      volumes:
+        - name: smb-homelab-vol
+          persistentVolumeClaim: 
+            claimName: smb-homelab-claim
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-homelab-claim
+  namespace: default
+  labels:
+    node-type: pi
+spec:
+  volumeName: smb-homelab
+  storageClassName: smb
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ki
