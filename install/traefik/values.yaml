@@ -5,9 +5,15 @@ service:
   # labels: {}
   spec:
     loadBalancerIP: 192.168.178.205 # this should be an IP in the Kube-VIP range
+    
   # loadBalancerSourceRanges: []
   # externalIPs: []
 dashboard:
   enabled: true
   ingressRoute:
     enabled: true
+# entryPoints:
+#   traefik:
+#     address: ':8201'
+# additionalArguments:
+#   - "--api.dashboard=true"

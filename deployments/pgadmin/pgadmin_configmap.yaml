@@ -5,8 +5,8 @@ metadata:
   labels:
     app: pgadmin
 data:
-  PGADMIN_DEFAULT_EMAIL: admin@admin.de
-  PGADMIN_DEFAULT_PASSWORD: admin
+  PGADMIN_DEFAULT_EMAIL: hvoadm@hvo.lan
+  PGADMIN_DEFAULT_PASSWORD: Opus111!
   PGADMIN_CONFIG_SERVER_MODE: 'False'
   PGADMIN_LISTEN_PORT: '5050'
-  PGADMIN_CONFIG_LOGIN_BANNER: '"From Config Map"'
+  PGADMIN_CONFIG_LOGIN_BANNER: '"Homelab Postgres Database"'

@@ -6,3 +6,4 @@ helm install traefik traefik/traefik --namespace traefik --create-namespace --va
 # kbc describe crd ingressroutes.traefik.io > xx.txt
 # kbc describe crd ingressroutes.traefik.io
 # kbc get crds | grep traefik
+# helm uninstall traefik -n traefik
