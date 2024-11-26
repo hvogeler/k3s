@@ -8,6 +8,18 @@ service:
     
   # loadBalancerSourceRanges: []
   # externalIPs: []
+ports:
+  web:
+    redirectTo: 
+      port: websecure
+
+# I do this in a separate ingress route manifest under deployments
+# ingressRoute:
+#   dashboard:
+#     enabled: true
+#     entryPoints: [web, websecure]
+#     match: Host(`traefik.hvo.lan`)
+
 dashboard:
   enabled: true
   ingressRoute:

@@ -4,8 +4,13 @@ metadata:
   name: traefik-dashboard
   namespace: traefik
 spec:
+  # In the default Helm chart values 
+  #   - web is set to 8000 and exposed as 80
+  #   - websecure is set to 8443 and expoed as 8443
+  # Therefore we see only the internal ports on the traefik dashboard
   entryPoints:
     - web
+    - websecure
   routes:
     - match: Host(`traefik.hvo.lan`) # && PathPrefix(`/traefik`)
       kind: Rule

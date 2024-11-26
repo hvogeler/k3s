@@ -1,28 +1,35 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: pgadmin-ui
+  name: pgadmin-ui-local
   namespace: default
 spec:
   entryPoints:
     - web
+    - websecure
   routes:
-    - match: Host(`pgadmin.hvo.lan`) # && PathPrefix(`/traefik`)
+    - match: Host(`pgadmin.hvo.lan`)
       kind: Rule
       # middlewares:
       #   - name: strip-traefik
       services:
         - name: pgadmin-service
           port: 80
-          # port: 5050
-          # kind: TraefikService
-# ---
-# apiVersion: traefik.io/v1alpha1
-# kind: Middleware
-# metadata:
-#   name: strip-traefik
-#   namespace: default
-# spec:
-#   stripPrefix:
-#     prefixes:
-#       - "/traefik"
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pgadmin-ui-web
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`pgadmin.vogeler.cc`)
+      kind: Rule
+      # middlewares:
+      #   - name: strip-traefik
+      services:
+        - name: pgadmin-service
+          port: 80
