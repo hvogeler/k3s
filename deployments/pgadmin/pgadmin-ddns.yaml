@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudflare-ddns
+  name: pgadmin-ddns
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3  
   jobTemplate:
