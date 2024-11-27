@@ -5,13 +5,16 @@ metadata:
   # namespace: cert-manager
 spec:
   acme:
-    email: heiko.vogeler@hvo.de
+    email: heiko.vogeler@vogeler.cc
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: cloudflare-clusterissuer-account-key
     solvers:
       - dns01:
           cloudflare:
+            email: heiko.vogeler@hvo.de
             apiTokenSecretRef:
               name: cloudflare-api-token-secret
-              key: WThrQk1jOERBQkZ3Wkljbmh5WkNYNjRpYlJMdW5KdVU0S3l3RUhhTQ==
+              key: api-token
+              # key: 7b54adb301ae3d55769dd8dceac25d6260a21
+              # key: Y8kBMc8DABFwZIcnhyZCX64ibRLunJuU4KywEHaM

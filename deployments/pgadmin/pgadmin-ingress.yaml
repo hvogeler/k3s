@@ -33,5 +33,5 @@ spec:
       services:
         - name: pgadmin-service
           port: 80
-  # tls:
-  #   secretName: pgadmin-certificate-secret
+  tls:
+    secretName: pgadmin-certificate-secret

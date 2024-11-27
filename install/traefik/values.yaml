@@ -8,10 +8,10 @@ service:
     
   # loadBalancerSourceRanges: []
   # externalIPs: []
-# ports:
-#   web:
-#     redirectTo: 
-#       port: websecure
+ports:
+  web:
+    redirectTo: 
+      port: websecure
 
 # I do this in a separate ingress route manifest under deployments
 # ingressRoute:
