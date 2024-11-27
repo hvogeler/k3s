@@ -1,0 +1,37 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancher-ui-local
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`rancher.hvo.lan`)
+      kind: Rule
+      # middlewares:
+      #   - name: strip-traefik
+      services:
+        - name: rancher-service
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancher-ui-web
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`rancher.vogeler.cc`)
+      kind: Rule
+      # middlewares:
+      #   - name: strip-traefik
+      services:
+        - name: rancher-service
+          port: 80
+  tls:
+    secretName: rancher-certificate-secret

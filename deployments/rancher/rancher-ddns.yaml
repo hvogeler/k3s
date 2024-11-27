@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rancher-ddns
+spec:
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3  
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: cloudflare-ddns
+              image: hvogeler/cloudflare-ddns:1.0
+              env:
+              - name: ZONE_ID
+                value: "d384373cd94754b3b3bddfd172d7aa56"
+              - name: RECORD_NAME
+                value: "rancher.vogeler.cc"
+              - name: AUTH_EMAIL
+                value: "heiko.vogeler@hvo.de"
+              - name: API_TOKEN
+                value: "H44Y6lECORFVJQK7oOc6jPGEG6V3SVKyYK4vWs4w"
+              - name: PROXIED
+                value: "false"
+          restartPolicy: OnFailure

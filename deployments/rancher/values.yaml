@@ -1,0 +1,2 @@
+ingress.tls.source=letsEncrypt
+replicas=1
